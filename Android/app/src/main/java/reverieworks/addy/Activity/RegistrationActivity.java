@@ -1,7 +1,9 @@
-package reverieworks.addy;
+package reverieworks.addy.Activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import reverieworks.addy.R;
 
 public class RegistrationActivity extends AppCompatActivity {
 
