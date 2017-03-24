@@ -34,7 +34,7 @@ android:layout_height="fill_parent">
             <Button
                 android:layout_width="83dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageButton_bloodGroup_RequestBlood"
+                android:id="@+id/imageButton_Search"
                 android:text="SEARCH"
                 android:textStyle="bold"
                 android:textAlignment="center"

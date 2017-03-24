@@ -16,9 +16,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -29,6 +33,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -50,32 +56,21 @@ public class MapsActivity extends FragmentActivity implements
     private static final long LOCATION_REFRESH_TIME = 100;
     private static final float LOCATION_REFRESH_DISTANCE = 10;
     private static final int REQUEST_CHECK_SETTINGS = 1000;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 10000;
+    private static final int PLCE_PICKER_REQUEST = 1;
     private GoogleMap mMap;
     private LocationManager mLocationManager;
     private Location mLastLocation;
     private GoogleApiClient mGoogleApiClient;
     private String receive_current_latitude;
     private String receive_current_longitude;
+    private Button button_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_maps_main);
 
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                LOCATION_REFRESH_DISTANCE, (android.location.LocationListener) mLocationListener);
 
         // Create an instance of GoogleAPIClient. To get current location
         if (mGoogleApiClient == null) {
@@ -90,6 +85,23 @@ public class MapsActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
+
+        button_search = (Button) findViewById(R.id.imageButton_Search);
+        button_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+                Intent intent;
+                try {
+                    intent = builder.build(MapsActivity.this);
+                    startActivityForResult(intent,PLCE_PICKER_REQUEST);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
@@ -202,10 +214,15 @@ public class MapsActivity extends FragmentActivity implements
             case Activity.RESULT_OK: {
                 // All required changes were successfully made
                 // Log.i(TAG, "Location enabled by user!");
-                Toast.makeText(getApplicationContext(), "Location Enabled", Toast.LENGTH_SHORT).show();
-                enableMyLocation();
-                startActivity(new Intent(MapsActivity.this, MapsActivity.class));
-                break;
+                if(resultCode == RESULT_OK){
+                    Place place = PlacePicker.getPlace(data,this);
+                    String address = String.format("Place is:", place.getAddress());
+                    Toast.makeText(getApplicationContext(),address,Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getApplicationContext(), "Location Enabled", Toast.LENGTH_SHORT).show();
+                    enableMyLocation();
+                    startActivity(new Intent(MapsActivity.this, MapsActivity.class));
+                }break;
             }
             case Activity.RESULT_CANCELED: {
                 // The user was asked to change settings, but chose not to
