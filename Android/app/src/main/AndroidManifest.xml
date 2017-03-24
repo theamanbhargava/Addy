@@ -13,7 +13,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_logo_png"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -35,7 +35,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -58,12 +57,24 @@
         </activity>
         <activity
             android:name=".Activity.MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".Activity.Homepage"
             android:label="@string/title_activity_homepage"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Activity.PlacesAPIActivity"></activity>
+        <activity android:name=".Activity.PlacesAPIActivity" />
+        <activity
+            android:name=".Activity.WelcomePage"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_welcome_page"
+            android:theme="@style/FullscreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

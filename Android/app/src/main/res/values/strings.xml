@@ -13,4 +13,8 @@
     <string name="google_place_key"></string>
     <string name="action_settings">Settings</string>
 
+    <string name="title_activity_welcome_page">WelcomePage</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 </resources>

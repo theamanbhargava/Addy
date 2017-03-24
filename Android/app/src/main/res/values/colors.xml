@@ -7,4 +7,6 @@
     <color name="colorDarkGreen">#008115</color>
     <color name="colorLightGreen">#00b61e</color>
     <color name="colorTextButton">#fdfdfd</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>
