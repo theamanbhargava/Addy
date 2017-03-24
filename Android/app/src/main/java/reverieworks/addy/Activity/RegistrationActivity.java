@@ -12,7 +12,10 @@ import android.support.v7.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.List;
 
+import reverieworks.addy.Fragment.SignUp;
+import reverieworks.addy.Fragment.SignIn;
 import reverieworks.addy.R;
+
 
 
 public class RegistrationActivity extends AppCompatActivity {
