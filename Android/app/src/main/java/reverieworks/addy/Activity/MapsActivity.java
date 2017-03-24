@@ -16,6 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -34,7 +35,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -58,6 +59,8 @@ public class MapsActivity extends FragmentActivity implements
     private static final int REQUEST_CHECK_SETTINGS = 1000;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 10000;
     private static final int PLCE_PICKER_REQUEST = 1;
+    private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static final String TAG = "MaspActivity";
     private GoogleMap mMap;
     private LocationManager mLocationManager;
     private Location mLastLocation;
@@ -90,15 +93,15 @@ public class MapsActivity extends FragmentActivity implements
         button_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                Intent intent;
                 try {
-                    intent = builder.build(MapsActivity.this);
-                    startActivityForResult(intent,PLCE_PICKER_REQUEST);
+                    Intent intent =
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                                    .build(MapsActivity.this);
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
                 } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
+                    // TODO: Handle the error.
                 } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
+                    // TODO: Handle the error.
                 }
             }
         });
@@ -214,10 +217,10 @@ public class MapsActivity extends FragmentActivity implements
             case Activity.RESULT_OK: {
                 // All required changes were successfully made
                 // Log.i(TAG, "Location enabled by user!");
-                if(resultCode == RESULT_OK){
-                    Place place = PlacePicker.getPlace(data,this);
-                    String address = String.format("Place is:", place.getAddress());
-                    Toast.makeText(getApplicationContext(),address,Toast.LENGTH_SHORT).show();
+                if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE){
+                    Place place = PlaceAutocomplete.getPlace(this, data);
+                    Log.i(TAG, "Place: " + place.getName());
+                    Toast.makeText(getApplicationContext(),place.getId(),Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getApplicationContext(), "Location Enabled", Toast.LENGTH_SHORT).show();
                     enableMyLocation();
