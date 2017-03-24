@@ -17,11 +17,11 @@
         
         <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
             
-        <link type="text/css" href="./css/style.css" rel="stylesheet">
-                
         <link type="text/css" href="./css/bootstrap.css" rel="stylesheet">
-            
+                
         <link type="text/css" href="./css/bootstrap.css.map" rel="stylesheet">
+            
+        <link type="text/css" href="./css/style.css" rel="stylesheet">
 
 
     </head>
@@ -32,66 +32,62 @@
     <div id="maparea" align="center"></div>
     
     
-    <div id="Search" class="col-xs-12" >
+    <div id="Search" class="col-sm-12" >
         
-        <div id="AddySearch" class="col-xs-5">
-            <div id="SearchBar" align="center"  class="col-xs-11">
-                <input  class="form-control input-md" id="BackCode" type="textbox" value="Search By Addy" onclick="document.getElementById('BackCode').value=''">
-                </input>
-            </div>
-        
-            <div id="SearchButton2" align="center" class="col-xs-1 glyphicon glyphicon-search" onclick="codeback()">
-            </div>
-        </div>
-        
-        <div class="col-xs-2" align="center"><img src="img/logo.png" class="img-responsive"></img></div>
-        
-        <div id="SearchBox" class="col-xs-5">
-            <div id="SearchBar" align="center"  class="col-xs-11">
+        <div id="SearchBox" class="col-sm-5">
+            <div id="SearchBar" align="center"  class="col-sm-11">
                 <input  class="form-control input-md" id="NameSearch" type="textbox" value="Jaipur" onclick="document.getElementById('NameSearch').value=''">
                 </input>
             </div>
-            <div id="SearchButton1" align="center" class="col-xs-1 glyphicon glyphicon-search" onclick="codeAddress()">
+            <div id="SearchButton1" align="center" class="col-sm-1 glyphicon glyphicon-search" onclick="codeAddress()">
             </div>
         </div>
-    </div>
-    
-    
-    
-    <div class="col-xs-12">
         
-        <div class="col-xs-3"></div>
+        <div class="col-sm-2" align="center">
+            <img src="img/logo.png" class="img-responsive">
+            </img>
+        </div>
         
-        <div id="infoPanel" class="col-xs-6" align="center">
-           
-            <div class="tabbable">
-                
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab1" data-toggle="tab"><b>Your Addy:</b></a></li>
-                    <li><a href="#tab2" data-toggle="tab"><b>Closest Matching Address:</b></a></li>
-                    <li><a href="#tab3" data-toggle="tab"><b>Lat-Long Position:</b></a></li>
-                </ul>
-                
-                <div class="tab-content">
-                    
-                    <div class="tab-pane active" id="tab1">
-                        <div id="addycode"></div>
-                    </div>
-                    <div class="tab-pane" id="tab2">
-                        <div id="address"></div>
-                    </div>
-                    <div class="tab-pane" id="tab3">
-                        <div id="info"></div>
-                    </div>
-                    
-                </div>
-                
+        <div id="AddySearch" class="col-sm-5">
+            <div id="SearchBar" align="center"  class="col-sm-11">
+                <input  class="form-control input-md" id="BackCode" type="textbox" value="Search By Addy" onclick="document.getElementById('BackCode').value=''">
+                </input>
             </div>
             
+            <div id="SearchButton2" align="center" class="col-sm-1 glyphicon glyphicon-search" onclick="codeback()">
+            </div>
         </div>
         
-        <div class="col-xs-3"></div>
-        
     </div>
+    
+    
+    <div id="infoPanel" align="center">
+           
+        <div class="tabbable">
+                
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab1" data-toggle="tab"><b>Your Addy:</b></a></li>
+                <li><a href="#tab2" data-toggle="tab"><b>Closest Matching Address:</b></a></li>
+                <li><a href="#tab3" data-toggle="tab"><b>Lat-Long Position:</b></a></li>
+            </ul>
+                
+            <div class="tab-content">
+                    
+                <div class="tab-pane active" id="tab1">
+                    <br/><div id="addycode"></div><br/>
+                </div>
+                <div class="tab-pane" id="tab2">
+                    <br/><div id="address"></div><br/>
+                </div>
+                <div class="tab-pane" id="tab3">
+                    <br/><div id="info"></div><br/>
+                </div>
+                    
+            </div>
+                
+        </div>
+            
+    </div>
+    
 </body>
 </html>

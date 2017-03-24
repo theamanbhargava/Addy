@@ -334,12 +334,12 @@ $(window).load(initMap = function(){
                }
                
                
-               back = function() {
+               codeback = function() {
                
                var backcode = document.getElementById('BackCode').value;
-               var backcode1 = backcode.substring(0,2);
-               var backcode2 = backcode.substring(3,5);
-               document.getElementById('NameSearch').value = [(codebackconvert(backcode1)/10000)-180,(codebackconvert(backcode2)/10000)-90].join(', ');
+               var backcode1 = backcode.substring(0,3);
+               var backcode2 = backcode.substring(3,6);
+               document.getElementById('NameSearch').value = [(codebackconvert(backcode1)/100)-180,(codebackconvert(backcode2)/100)-90].join(', ');
                codeAddress();
                }
                });
