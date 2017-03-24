@@ -22,7 +22,18 @@ $(window).load(initMap = function(){
                                 if (status == google.maps.GeocoderStatus.OK) {
                                 map = new google.maps.Map(document.getElementById('maparea'), {
                                                           zoom: 8,
-                                                          scaleControl: true,styles: [
+                                                          disableDefaultUI: true,
+                                                          fullscreenControl: true,
+                                                          zoomControl: true,
+                                                          rotateControl: true,
+                                                          scaleControl: true,
+                                                          mapTypeControl: true,
+                                                          mapTypeControlOptions: {
+                                                          style: google.maps.MapTypeControlStyle.DEFAULT,
+                                                          position: google.maps.ControlPosition.LEFT_BOTTOM
+                                                          },
+
+                                                          styles: [
                                                                                       {
                                                                                       "elementType": "geometry",
                                                                                       "stylers": [
@@ -247,8 +258,10 @@ $(window).load(initMap = function(){
                                                                 map: map,
                                                                 position: results[0].geometry.location,
                                                                 draggable: true,
+                                                                animation:google.maps.Animation.DROP,
                                                                 title: 'drag'
                                                                 });
+                                marker.addListener('click', toggleBounce);
                                 updateMarkerPosition(results[0].geometry.location);
                                 updateaddycode(results[0].geometry.location);
                                 geocodePosition(results[0].geometry.location);
@@ -272,6 +285,15 @@ $(window).load(initMap = function(){
                                 }
                                 });
                }
+               
+               function toggleBounce() {
+               if (marker.getAnimation() !== null) {
+               marker.setAnimation(null);
+               } else {
+               marker.setAnimation(google.maps.Animation.BOUNCE);
+               }
+               }
+
                
                function geocodePosition(pos) {
                geocoder.geocode({
