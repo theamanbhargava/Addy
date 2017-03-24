@@ -1,4 +1,4 @@
-$(window).load(function(){
+$(window).load(initMap = function(){
                
                var geocoder;
                var map;
@@ -17,12 +17,23 @@ $(window).load(function(){
                codeAddress = function () {
                geocoder = new google.maps.Geocoder();
                
-               var address = document.getElementById('namesearch').value;
+               var address = document.getElementById('NameSearch').value;
                geocoder.geocode( { 'address': address}, function(results, status) {
                                 if (status == google.maps.GeocoderStatus.OK) {
                                 map = new google.maps.Map(document.getElementById('maparea'), {
                                                           zoom: 8,
-                                                          scaleControl: true,styles: [
+                                                          disableDefaultUI: true,
+                                                          fullscreenControl: true,
+                                                          zoomControl: true,
+                                                          rotateControl: true,
+                                                          scaleControl: true,
+                                                          mapTypeControl: true,
+                                                          mapTypeControlOptions: {
+                                                          style: google.maps.MapTypeControlStyle.DEFAULT,
+                                                          position: google.maps.ControlPosition.LEFT_BOTTOM
+                                                          },
+
+                                                          styles: [
                                                                                       {
                                                                                       "elementType": "geometry",
                                                                                       "stylers": [
@@ -238,10 +249,6 @@ $(window).load(function(){
                                                                                       }
                                                                                       ],
                                                           streetViewControl: true,
-                                                          mapTypeControlOptions: {
-                                                          style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                                                          mapTypeIds:[google.maps.MapTypeId.HYBRID, google.maps.MapTypeId.ROADMAP]
-                                                          },
                                                           center: results[0].geometry.location,
                                                           mapTypeId: google.maps.MapTypeId.ROADMAP
                                                           });
@@ -251,8 +258,10 @@ $(window).load(function(){
                                                                 map: map,
                                                                 position: results[0].geometry.location,
                                                                 draggable: true,
+                                                                animation:google.maps.Animation.DROP,
                                                                 title: 'drag'
                                                                 });
+                                marker.addListener('click', toggleBounce);
                                 updateMarkerPosition(results[0].geometry.location);
                                 updateaddycode(results[0].geometry.location);
                                 geocodePosition(results[0].geometry.location);
@@ -272,10 +281,19 @@ $(window).load(function(){
                                                               });
                                 
                                 } else {
-                                alert('Geocode was not successful for the following reason: ' + status);
+                                alert('Error: ' + status);
                                 }
                                 });
                }
+               
+               function toggleBounce() {
+               if (marker.getAnimation() !== null) {
+               marker.setAnimation(null);
+               } else {
+               marker.setAnimation(google.maps.Animation.BOUNCE);
+               }
+               }
+
                
                function geocodePosition(pos) {
                geocoder.geocode({
@@ -305,9 +323,9 @@ $(window).load(function(){
                var longitude = latLng.lng();
                var lati = Math.round(latitude*100)+18000;
                var long = Math.round(longitude*100)+9000;
-               document.getElementById('addycode').innerHTML = [
-                                                              codeconvert(lati),codeconvert(long)
-                                                              ].join('');
+               var latcode = codeconvert(lati);
+               var longcode = codeconvert(long);
+               document.getElementById('addycode').innerHTML = [latcode,longcode].join('-');
                
                }
                
@@ -316,12 +334,12 @@ $(window).load(function(){
                }
                
                
-               back = function() {
+               codeback = function() {
                
-               var backcode = document.getElementById('backcode').value;
-               var backcode1 = backcode.substring(0,2);
-               var backcode2 = backcode.substring(3,5);
-               document.getElementById('namesearch').value = [(codebackconvert(backcode1)/100)-180,(codebackconvert(backcode2)/100)-90].join(', ');
+               var backcode = document.getElementById('BackCode').value;
+               var backcode1 = backcode.substring(0,3);
+               var backcode2 = backcode.substring(3,6);
+               document.getElementById('NameSearch').value = [(codebackconvert(backcode1)/100)-180,(codebackconvert(backcode2)/100)-90].join(', ');
                codeAddress();
                }
                });
