@@ -13,10 +13,9 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.view.View;
+import android.support.v4.content.ContextCompat;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,6 +49,7 @@ public class MapsActivity extends FragmentActivity implements
     private static final long LOCATION_REFRESH_TIME = 100;
     private static final float LOCATION_REFRESH_DISTANCE = 10;
     private static final int REQUEST_CHECK_SETTINGS = 1000;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private GoogleMap mMap;
     private LocationManager mLocationManager;
     private Location mLastLocation;
@@ -210,14 +210,15 @@ public class MapsActivity extends FragmentActivity implements
             case Activity.RESULT_CANCELED: {
                 // The user was asked to change settings, but chose not to
                 //TODO: display the below code
-                Snackbar snackbar = Snackbar.make(coordinatorLayout, "No Connection Found", Snackbar.LENGTH_INDEFINITE)
+                Toast.makeText(getApplicationContext(),"No Connection Found",Toast.LENGTH_SHORT).show();
+                /*Snackbar snackbar = Snackbar.make(, "No Connection Found", Snackbar.LENGTH_INDEFINITE)
                         .setAction("GO OFFLINE", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                             }
                         });
-                // Log.i(TAG, "Location not enabled, user cancelled.");
+                */// Log.i(TAG, "Location not enabled, user cancelled.");
                 break;
             }
             default: {
@@ -226,6 +227,22 @@ public class MapsActivity extends FragmentActivity implements
             }
         }
     }
+
+    /**
+     * Enables the My Location layer if the fine location permission has been granted.
+     */
+    private void enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+//            PermissionUtils.requestPermission(getApplicationContext(), LOCATION_PERMISSION_REQUEST_CODE,
+  //                  Manifest.permission.ACCESS_FINE_LOCATION, true);
+        } else if (mMap != null) {
+            // Access to the location has been granted to the app.
+            mMap.setMyLocationEnabled(true);
+        }
+    }
+
 
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -256,6 +273,11 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public boolean onMyLocationButtonClick() {
         return false;
+    }
+
+    @Override
+    public void onBackPressed(){
+
     }
 
 }
