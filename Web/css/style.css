@@ -2,25 +2,6 @@ body {
     font-family: 'Muli', sans-serif;
 }
 
-#city_country {
-    padding: 1px 4px;
-    font-family: 'Muli', sans-serif;
-    
-}
-
-#button {
-    font-size: 13px;
-    border: none;
-    color: #FFFFFF;
-    text-align: center;
-    display: inline-block;
-    background-color: #000000;
-    opacity: 0.8;
-    font-family: 'Muli', sans-serif;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 5px;
-}
-
 #maparea {
     width: 100%;
     height: 100%;
@@ -44,4 +25,51 @@ body {
     font-family: 'Muli', sans-serif;
     padding-right: 10px;
     padding-left: 10px;
+}
+
+#SearchButton2 {
+    padding:10px;
+    color:#a0a0a0;
+}
+
+#SearchButton2:focus, #SearchButton2:active, #SearchButton2:hover{
+    color: #006098;
+}
+
+#SearchButton1 {
+    padding:10px;
+    color:#a0a0a0;
+}
+
+#SearchButton1:focus, #SearchButton1:active, #SearchButton1:hover{
+    color: #006098;
+}
+
+#SearchBox {
+    background-color:#fff;
+    padding:5px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+#Search {
+    position:absolute;
+    margin-top:10px;
+}
+
+#NameSearch {
+    border:none;
+    box-shadow:none;
+}
+
+#AddySearch {
+    background-color:#fff;
+    padding:5px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+#BackCode {
+    border:none;
+    box-shadow:none;
 }

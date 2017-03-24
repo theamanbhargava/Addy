@@ -17,7 +17,7 @@ $(window).load(initMap = function(){
                codeAddress = function () {
                geocoder = new google.maps.Geocoder();
                
-               var address = document.getElementById('namesearch').value;
+               var address = document.getElementById('NameSearch').value;
                geocoder.geocode( { 'address': address}, function(results, status) {
                                 if (status == google.maps.GeocoderStatus.OK) {
                                 map = new google.maps.Map(document.getElementById('maparea'), {
@@ -238,10 +238,6 @@ $(window).load(initMap = function(){
                                                                                       }
                                                                                       ],
                                                           streetViewControl: true,
-                                                          mapTypeControlOptions: {
-                                                          style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                                                          mapTypeIds:[google.maps.MapTypeId.HYBRID, google.maps.MapTypeId.ROADMAP]
-                                                          },
                                                           center: results[0].geometry.location,
                                                           mapTypeId: google.maps.MapTypeId.ROADMAP
                                                           });
@@ -318,10 +314,10 @@ $(window).load(initMap = function(){
                
                back = function() {
                
-               var backcode = document.getElementById('backcode').value;
+               var backcode = document.getElementById('BackCode').value;
                var backcode1 = backcode.substring(0,2);
                var backcode2 = backcode.substring(3,5);
-               document.getElementById('namesearch').value = [(codebackconvert(backcode1)/10000)-180,(codebackconvert(backcode2)/10000)-90].join(', ');
+               document.getElementById('NameSearch').value = [(codebackconvert(backcode1)/10000)-180,(codebackconvert(backcode2)/10000)-90].join(', ');
                codeAddress();
                }
                });
