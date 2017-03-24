@@ -13,7 +13,7 @@ This is an Android Application built for Addy. This is a native Android Applicat
 
 Wiki
 
-Documentation : https://github.com/Addy-HINT17/Addy/wiki/Documentation
+[Documentation] : (https://github.com/Addy-HINT17/Addy/wiki/Documentation)
 
 Product Roadmap
 
