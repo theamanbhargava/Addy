@@ -41,7 +41,7 @@ body {
     color:#a0a0a0;
 }
 
-#SearchButton1:focus, #SearchButton1:active, #SearchButton2:hover{
+#SearchButton1:focus, #SearchButton1:active, #SearchButton1:hover{
     color: #006098;
 }
 
@@ -83,4 +83,35 @@ body {
 
 .nav-tabs, .nav-pills {
     text-align:center;
+}
+
+#pac-container {
+    padding-bottom: 12px;
+    margin-right: 12px;
+}
+
+.pac-controls {
+    display: inline-block;
+    padding: 5px 11px;
+}
+
+.pac-controls label {
+    font-family: 'Muli';
+    font-size: 13px;
+    font-weight: 300;
+}
+
+#pac-input {
+    background-color: #fff;
+    font-family: 'Muli';
+    font-size: 15px;
+    font-weight: 300;
+    margin-left: 12px;
+    padding: 0 11px 0 13px;
+    text-overflow: ellipsis;
+    width: 400px;
+}
+
+#pac-input:focus {
+    border-color: #4d90fe;
 }

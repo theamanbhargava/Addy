@@ -23,7 +23,7 @@ $(window).load(initMap = function(){
                                 map = new google.maps.Map(document.getElementById('maparea'), {
                                                           zoom: 8,
                                                           disableDefaultUI: true,
-                                                          fullscreenControl: true,
+                                                          fullscreenControl: false,
                                                           zoomControl: true,
                                                           rotateControl: true,
                                                           scaleControl: true,
@@ -253,6 +253,10 @@ $(window).load(initMap = function(){
                                                           mapTypeId: google.maps.MapTypeId.ROADMAP
                                                           });
                                 
+                                
+
+
+                                
                                 map.setCenter(results[0].geometry.location);
                                 marker = new google.maps.Marker({
                                                                 map: map,
@@ -261,6 +265,8 @@ $(window).load(initMap = function(){
                                                                 animation:google.maps.Animation.DROP,
                                                                 title: 'drag'
                                                                 });
+
+                                
                                 marker.addListener('click', toggleBounce);
                                 updateMarkerPosition(results[0].geometry.location);
                                 updateaddycode(results[0].geometry.location);
@@ -325,7 +331,7 @@ $(window).load(initMap = function(){
                var long = Math.round(longitude*100)+9000;
                var latcode = codeconvert(lati);
                var longcode = codeconvert(long);
-               document.getElementById('addycode').innerHTML = [latcode,longcode].join('-');
+               document.getElementById('addycode').innerHTML = [latcode,longcode].join('');
                
                }
                
