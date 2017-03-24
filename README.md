@@ -20,4 +20,6 @@ This is an Android Application built for Addy. This is a native Android Applicat
 
 <a href="https://github.com/Addy-HINT17/Addy/wiki/Documentation"> Documentation</a>
 
-<a href="https://github.com/Addy-HINT17/Addy/wiki/ProductRoadmap"> Product Roadmap</a>
+<a href="https://github.com/Addy-HINT17/Addy/wiki/Product-Roadmap"> Product Roadmap</a>
+
+<a href="https://github.com/Addy-HINT17/Addy/wiki/REST-API"> REST APIs</a>
