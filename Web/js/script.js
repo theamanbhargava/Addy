@@ -1,4 +1,4 @@
-$(window).load(function(){
+$(window).load(initMap = function(){
                
                var geocoder;
                var map;
@@ -272,7 +272,7 @@ $(window).load(function(){
                                                               });
                                 
                                 } else {
-                                alert('Geocode was not successful for the following reason: ' + status);
+                                alert('Error: ' + status);
                                 }
                                 });
                }
@@ -305,9 +305,9 @@ $(window).load(function(){
                var longitude = latLng.lng();
                var lati = Math.round(latitude*100)+18000;
                var long = Math.round(longitude*100)+9000;
-               document.getElementById('addycode').innerHTML = [
-                                                              codeconvert(lati),codeconvert(long)
-                                                              ].join('');
+               var latcode = codeconvert(lati);
+               var longcode = codeconvert(long);
+               document.getElementById('addycode').innerHTML = [latcode,longcode].join('-');
                
                }
                
@@ -321,7 +321,7 @@ $(window).load(function(){
                var backcode = document.getElementById('backcode').value;
                var backcode1 = backcode.substring(0,2);
                var backcode2 = backcode.substring(3,5);
-               document.getElementById('namesearch').value = [(codebackconvert(backcode1)/100)-180,(codebackconvert(backcode2)/100)-90].join(', ');
+               document.getElementById('namesearch').value = [(codebackconvert(backcode1)/10000)-180,(codebackconvert(backcode2)/10000)-90].join(', ');
                codeAddress();
                }
                });
