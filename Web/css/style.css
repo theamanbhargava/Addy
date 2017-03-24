@@ -14,17 +14,10 @@ body {
     
 }
 #infoPanel {
-    width: 17%;
-    height: 80%;
-    left: 7%;
-    top: 8%;
-    font-size: 13px;
-    float: left;
-    position: absolute;
-    color: #000000;
-    font-family: 'Muli', sans-serif;
-    padding-right: 10px;
-    padding-left: 10px;
+    background-color:#fff;
+    padding:35px;
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
 }
 
 #SearchButton2 {
@@ -41,7 +34,7 @@ body {
     color:#a0a0a0;
 }
 
-#SearchButton1:focus, #SearchButton1:active, #SearchButton1:hover{
+#SearchButton1:focus, #SearchButton1:active, #SearchButton2:hover{
     color: #006098;
 }
 
