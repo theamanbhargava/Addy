@@ -18,6 +18,10 @@ $(window).load(initMap = function(){
                geocoder = new google.maps.Geocoder();
                
                var address = document.getElementById('NameSearch').value;
+               
+               if(address === '' )
+                    address = 'Allahabad';
+               
                geocoder.geocode( { 'address': address}, function(results, status) {
                                 if (status == google.maps.GeocoderStatus.OK) {
                                 map = new google.maps.Map(document.getElementById('maparea'), {

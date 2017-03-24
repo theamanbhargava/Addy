@@ -74,6 +74,14 @@ body {
     box-shadow:none;
 }
 
+#addycode {
+    font-size:30px;
+}
+
+#address, #info {
+    font-size:15px;
+}
+
 .nav-tabs > li, .nav-pills > li {
     float:none;
     display:inline-block;
