@@ -1,0 +1,58 @@
+<html>
+    
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+            
+        <title>Addy</title>
+        
+        <link type="text/css" href="./css/style.css" rel="stylesheet">
+
+        <script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+        
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyCEqoC5yQIIBXbNVxsuRe787A29ZC32CVA&callback=initMap"></script>
+        
+        <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
+        
+        <script type="text/javascript" src="./js/script.js"></script>
+    
+    </head>
+    
+    
+<body onload="codeAddress()">
+    
+    <div id="maparea" align="center">
+    </div>
+    <div id="infoPanel" align="center">
+        <div style="padding-left:5px;padding-right:5px;">
+            <div id="panel" align="center" style="background: #f9f6ed;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.39);border-radius: 5px;opacity:0.95;padding-right: 10px;padding-left: 10px;"><br/>
+                <b>Search by Place Name</b><br/><br/>
+            <input style="font-size: 11px;width: 100px;height:20px;border-radius: 5px;" id="namesearch" type="textbox" value="Jaipur"><br/><br/>
+            <input type="button" value="Search" onclick="codeAddress()" id="button">
+            <br/>
+            <br/>
+            </div>
+            <br/>
+            <div style="background: #f9f6ed;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.39);border-radius: 5px;opacity:0.95;padding-right: 10px;padding-left: 10px;">
+            <br/>
+            <div><img src="img/logo.png" style="height:10%;"></img><b style="font-size: 14px;"><br/><br/>Addy - Address ID</b><br/></div>
+            
+            <br/><b>Your Addy:</b>
+            <div id="addycode"></div>
+            <br/><b>Closest Matching Address:</b>
+            <div id="address"></div>
+            <br/><b>Lat-Long Position:</b>
+            <div id="info"></div>
+            <br/>
+            </div><br/>
+            <div id="panel" align="center" style="background: #f9f6ed;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.39);border-radius: 5px;opacity:0.95;padding-right: 10px;padding-left: 10px;"><br/>
+                <b>Search by Addy</b><br/><br/>
+                <input style="font-size: 11px; width: 90px;height:20px; text-align:center;border-radius: 5px;" id="backcode" type="textbox" value="FYRCSJ">
+                <br/><br/><input type="button" value="Search" onclick="codeback()" id="button">
+                <br/>
+                <br/>
+            </div>
+    </div>
+</body>
+</html>
