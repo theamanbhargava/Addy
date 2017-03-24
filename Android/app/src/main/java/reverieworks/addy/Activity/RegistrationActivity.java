@@ -12,7 +12,10 @@ import android.support.v7.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.List;
 
+import reverieworks.addy.Fragment.SignUp;
+import reverieworks.addy.Fragment.SignIn;
 import reverieworks.addy.R;
+
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -39,27 +42,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        //To get the SHA key of the app
-        /*
-        PackageInfo info;
-        try {
-            info = getPackageManager().getPackageInfo("mcb.myclickbazaar", PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md;
-                md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                String something = new String(Base64.encode(md.digest(), 0));
-                //String something = new String(Base64.encodeBytes(md.digest()));
-                Log.e("hash key", something);
-            }
-        } catch (PackageManager.NameNotFoundException e1) {
-            Log.e("name not found", e1.toString());
-        } catch (NoSuchAlgorithmException e) {
-            Log.e("no such an algorithm", e.toString());
-        } catch (Exception e) {
-            Log.e("exception", e.toString());
-        }
-*/
+
     }
 
 

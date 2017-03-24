@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.multidex.MultiDex;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,9 +42,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import reverieworks.addy.Activity.MapsActivity;
 import reverieworks.addy.R;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
+
 
 public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -71,7 +74,7 @@ public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFail
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        MultiDex.install(getContext());
         mAuth = FirebaseAuth.getInstance();
 
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -171,7 +174,7 @@ public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFail
                                 Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
                                 Toast.makeText(getContext(), "Successfully Logged In", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), Homepage.class));
+                                //startActivity(new Intent(getApplicationContext(), Homepage.class));
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
@@ -276,27 +279,27 @@ public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFail
 
     private void facebookLogIn(View view) {
 
-        LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
-        // If using in a fragment
-        loginButton.setFragment(this);
-        // Other app specific specialization
-        loginButton.performClick();
-        // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                // App code
-                Toast.makeText(getContext(), "Logged In Successfully", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), Homepage.class));
-            }
+            LoginButton loginButton = (LoginButton) view.findViewById(R.id.login_button);
+            loginButton.setReadPermissions("email");
+            // If using in a fragment
+            loginButton.setFragment(this);
+            // Other app specific specialization
+            loginButton.performClick();
+            // Callback registration
+            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    // App code
+                    Toast.makeText(getContext(), "Logged In Successfully", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+                }
 
-            @Override
-            public void onCancel() {
-                // App code
-                Toast.makeText(getContext(), "LogIn Failed",
-                        Toast.LENGTH_SHORT).show();
-            }
+                @Override
+                public void onCancel() {
+                    // App code
+                    Toast.makeText(getContext(), "LogIn Failed",
+                            Toast.LENGTH_SHORT).show();
+                }
 
             @Override
             public void onError(FacebookException exception) {
@@ -357,7 +360,7 @@ public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFail
                         Toast.makeText(getContext(), "Successfully LoggedIn",
                                 Toast.LENGTH_SHORT).show();
 
-                        //startActivity(new Intent(getApplicationContext(), Homepage.class));
+                        startActivity(new Intent(getApplicationContext(), MapsActivity.class));
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
