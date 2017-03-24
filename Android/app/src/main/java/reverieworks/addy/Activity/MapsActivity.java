@@ -14,11 +14,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -36,6 +38,8 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -47,18 +51,13 @@ import reverieworks.addy.R;
 
 import static reverieworks.addy.R.id.map;
 
-public class MapsActivity extends FragmentActivity implements
+public class MapsActivity extends AppCompatActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
         OnMapReadyCallback,
         ActivityCompat.OnRequestPermissionsResultCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener {
 
-
-    private static final long LOCATION_REFRESH_TIME = 100;
-    private static final float LOCATION_REFRESH_DISTANCE = 10;
     private static final int REQUEST_CHECK_SETTINGS = 1000;
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 10000;
-    private static final int PLCE_PICKER_REQUEST = 1;
     private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     private static final String TAG = "MaspActivity";
     private GoogleMap mMap;
@@ -67,13 +66,20 @@ public class MapsActivity extends FragmentActivity implements
     private GoogleApiClient mGoogleApiClient;
     private String receive_current_latitude;
     private String receive_current_longitude;
-    private Button button_search;
+    private Button button_searchByPlaces;
+    private Button button_searchByACode;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps_main);
 
+        assert getSupportActionBar() != null;
+        {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Addy");
+        }
 
         // Create an instance of GoogleAPIClient. To get current location
         if (mGoogleApiClient == null) {
@@ -89,8 +95,37 @@ public class MapsActivity extends FragmentActivity implements
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
 
-        button_search = (Button) findViewById(R.id.imageButton_Search);
-        button_search.setOnClickListener(new View.OnClickListener() {
+        searchView = (SearchView) findViewById(R.id.search_bar_maps);
+
+        final PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+        button_searchByACode = (Button) findViewById(R.id.button_SearchByACode);
+        button_searchByACode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    button_searchByACode.setVisibility(View.GONE);
+                    button_searchByPlaces.setVisibility(View.GONE);
+
+                    searchView.setVisibility(View.VISIBLE);            }
+        });
+
+        button_searchByPlaces = (Button) findViewById(R.id.button_SearchByPlace);
+        button_searchByPlaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -98,9 +133,7 @@ public class MapsActivity extends FragmentActivity implements
                             new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
                                     .build(MapsActivity.this);
                     startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-                } catch (GooglePlayServicesRepairableException e) {
-                    // TODO: Handle the error.
-                } catch (GooglePlayServicesNotAvailableException e) {
+                } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
                     // TODO: Handle the error.
                 }
             }
@@ -298,6 +331,17 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onBackPressed(){
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.maps_menu, menu);
+        // Retrieve the SearchView and plug it into SearchManager
+      /*  final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+*/
+        return true;
     }
 
 }
