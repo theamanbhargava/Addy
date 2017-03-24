@@ -11,10 +11,8 @@ This is a Web Application built for Addy. It has HTML, CSS Front-End with JavaSc
 ##Android
 This is an Android Application built for Addy. This is a native Android Application written purely in Java.
 
-Wiki
+<a href="https://github.com/Addy-HINT17/Addy/wiki"> Wiki</a>
 
-[Documentation] : (https://github.com/Addy-HINT17/Addy/wiki/Documentation)
+<a href="https://github.com/Addy-HINT17/Addy/wiki/Documentation"> Documentation</a>
 
-Product Roadmap
-
-To be added - Product Mockup
+<a href="https://github.com/Addy-HINT17/Addy/wiki/ProductRoadmap"> Product Roadmap</a>
