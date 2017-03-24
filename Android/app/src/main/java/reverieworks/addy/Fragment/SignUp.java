@@ -1,5 +1,6 @@
 package reverieworks.addy.Fragment;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,9 +20,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import mcb.myclickbazaar.R;
+import reverieworks.addy.Activity.MapsActivity;
+import reverieworks.addy.R;
 
-import static mcb.myclickbazaar.R.id.textView_userLogo_signUp;
+import static com.facebook.FacebookSdk.getApplicationContext;
+import static reverieworks.addy.R.id.textView_userLogo_signUp;
 
 
 public class SignUp extends Fragment{
@@ -128,7 +131,7 @@ public class SignUp extends Fragment{
                                 Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
                                 Toast.makeText(getContext(), "Sign Up Success", Toast.LENGTH_SHORT).show();
-
+                                startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
