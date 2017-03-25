@@ -43,7 +43,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         } else {
                             finish();
                         }
-                        Intent intent = new Intent(WelcomeActivity.this, reverieworks.addy.Activity.WelcomeActivity.class);
+                        Intent intent = new Intent(WelcomeActivity.this, reverieworks.addy.Activity.MapsActivity.class);
                         startActivity(intent);
                     } else {
 //                        dialog_Settings.show();
@@ -51,7 +51,6 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 }
             }, _splashTime);
-
         } else {
             Toast.makeText(getApplicationContext(),"No Connetion Found",Toast.LENGTH_LONG).show();
             Toast.makeText(getApplicationContext(),"No Connetion Found",Toast.LENGTH_LONG).show();
