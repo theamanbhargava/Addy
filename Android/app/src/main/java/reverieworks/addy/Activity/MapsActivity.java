@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,6 +49,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -157,9 +159,16 @@ public class MapsActivity extends AppCompatActivity implements
                                         Toast.makeText(getApplicationContext(), userInput.getText(), Toast.LENGTH_LONG).show();
                                         if (isLegalACodeCustomName(userInput.getText().toString()))
                                             new GetACodeFromCustomName().execute(userInput.getText().toString());
-                                        else
-                                            latlng = convertback(userInput.getText().toString());
+                                        else {
 
+
+                                            String latlng2 = convertback(userInput.getText().toString());
+                                            String[] latlong =  latlng2.split(",");
+                                            double latitude = Double.parseDouble(latlong[0]);
+                                            double longitude = Double.parseDouble(latlong[1]);
+                                            LatLng location = new LatLng(latitude, longitude);
+                                            createMarker(userInput.getText().toString(),location,latitude,longitude);
+                                        }
                                     }
                                 })
                         .setNegativeButton("Cancel",
@@ -181,7 +190,9 @@ public class MapsActivity extends AppCompatActivity implements
         button_searchByPlaces.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 try {
+
                     Intent intent =
                             new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
                                     .build(MapsActivity.this);
@@ -217,11 +228,9 @@ public class MapsActivity extends AppCompatActivity implements
     }
 
 */
-    }
-
-    private void convertACodeToLatLong() {
 
     }
+
 
     public boolean isLegalACodeCustomName(String acode) {
 
@@ -377,29 +386,29 @@ public class MapsActivity extends AppCompatActivity implements
             mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).anchor(0.5f, 0.5f).title(acode));
             //mMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pegman));
 
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 10);
+            mMap.animateCamera(cameraUpdate);
 
         }
     }
 
 
-    class RequestACodeFromCustomName extends AsyncTask<String, Void, String> {
+    class SendCustomName extends AsyncTask<String, Void, String> {
 
         int responseCode;
         String JsonResponse;
 
         protected void onPreExecute() {
 
-            progressDialog.setMessage("Sending Request...");
+            progressDialog.setMessage("Sending custom name...");
             progressDialog.show();
         }
 
         @Override
         protected String doInBackground(String... params) {
 
-            String data_username = params[0];
-            String data_Password = params[1];
-            int data_bloodID = Integer.parseInt(params[2]);
-            int data_userID = Integer.parseInt(params[3]);
+            String special_name = params[0];
+            String acode = params[1];
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -408,28 +417,32 @@ public class MapsActivity extends AppCompatActivity implements
                 urlConnection = (HttpURLConnection) url.openConnection();
 
                 JSONObject JSON_Main = new JSONObject();
-/*
+
                 try {
 
-                    JSON_Main.put("UserName", JSON_User);
+                    JSON_Main.put("UserName", "username");
+                    JSON_Main.put("Acode",acode);
+                    JSON_Main.put("Special_Name",special_name);
                     //JSON_Main.put()
                     // Log.e(TAG, JSON_Main.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }*/
+                }
 //set headers
+
                 urlConnection.setRequestMethod("POST");
-                urlConnection.setRequestProperty("X-Auth", data_username + ":" + data_Password);
-                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setRequestProperty("x-apikey","0e835d0ce5cc81e9ae08fb1f7ac2392ad04ee");
+                urlConnection.setRequestProperty("cache-control","no-cache");
+                urlConnection.setRequestProperty("CONTENT-TYPE","application/json");
                 urlConnection.connect();
 
 //set headers and method
                 DataOutputStream writer = new DataOutputStream(urlConnection.getOutputStream());
-                // Log.i(TAG, JSON_Main.toString());
+                Log.i(TAG, JSON_Main.toString());
                 writer.writeBytes(JSON_Main.toString());
 // json data
-                //     android.util.Log.e(TAG, "ResponseMessage " + urlConnection.getResponseMessage() + "ResponseCode " + urlConnection.getResponseCode());
+                android.util.Log.e(TAG, "ResponseMessage " + urlConnection.getResponseMessage() + "ResponseCode " + urlConnection.getResponseCode());
                 responseCode = urlConnection.getResponseCode();
                 writer.flush();
                 writer.close();
@@ -520,6 +533,8 @@ public class MapsActivity extends AppCompatActivity implements
             }
             showMessageDialog(title_alertBox, message_alertBox);
         }
+
+
     }
 
     private void showMessageDialog(String title, String message) {
@@ -590,7 +605,6 @@ public class MapsActivity extends AppCompatActivity implements
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
         mMap.setMyLocationEnabled(true);
 
         enableMyLocation();
@@ -682,8 +696,9 @@ public class MapsActivity extends AppCompatActivity implements
                 // Log.i(TAG, "Location enabled by user!");
                 if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE){
                     Place place = PlaceAutocomplete.getPlace(this, data);
-                    Log.i(TAG, "Place: " + place.getName());
-                    Toast.makeText(getApplicationContext(),place.getId(),Toast.LENGTH_SHORT).show();
+                    Log.i(TAG, "Place: " + place.getLatLng());
+                    createMarkerLatLng(convert(place.getLatLng().latitude,place.getLatLng().longitude),place.getLatLng());
+                    Toast.makeText(getApplicationContext(),place.getName(),Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getApplicationContext(), "Location Enabled", Toast.LENGTH_SHORT).show();
                     enableMyLocation();
@@ -708,6 +723,21 @@ public class MapsActivity extends AppCompatActivity implements
                 // Log.e(TAG, "Error in selecting the button in Auto-Switch On Location Feature");
                 break;
             }
+        }
+    }
+
+    private void createMarkerLatLng(CharSequence name, LatLng latLng_local) {
+        Marker mMarker = null;
+        if (name!= null) {
+
+            mMap.setOnMarkerClickListener(this);
+            mMap.addMarker(new MarkerOptions().position(latLng_local).anchor(0.5f, 0.5f).title(name.toString()));
+            //mMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pegman));
+
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng_local, 10);
+            mMap.animateCamera(cameraUpdate);
+
+
         }
     }
 
@@ -750,7 +780,50 @@ public class MapsActivity extends AppCompatActivity implements
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        getCustomName(marker);
         return false;
+    }
+
+    private void getCustomName(final Marker marker) {
+
+        Context context = MapsActivity.this;
+        LayoutInflater li = LayoutInflater.from(context);
+        View promptsView = li.inflate(R.layout.dialog_layout, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
+
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView);
+
+        final EditText userInput = (EditText) promptsView
+                .findViewById(R.id.editTextDialogUserInput);
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // get user input and set it to result
+                                // edit text
+                                new SendCustomName().execute(userInput.getText().toString(),convert(marker.getPosition().latitude,marker.getPosition().longitude));
+                                Toast.makeText(getApplicationContext(), userInput.getText(), Toast.LENGTH_LONG).show();
+
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
     }
 
     @Override
@@ -766,6 +839,7 @@ public class MapsActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.maps_menu, menu);
+
         // Retrieve the SearchView and plug it into SearchManager
       /*  final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
@@ -773,5 +847,18 @@ public class MapsActivity extends AppCompatActivity implements
 */
         return true;
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_addCustomName:
+                // TODO put your code here to respond to the button tap
+                Toast.makeText(getApplicationContext(), "ADD!", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
 
 }
