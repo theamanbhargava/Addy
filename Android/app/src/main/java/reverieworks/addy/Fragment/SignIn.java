@@ -1,6 +1,7 @@
 package reverieworks.addy.Fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -45,7 +46,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import reverieworks.addy.Activity.MapsActivity;
 import reverieworks.addy.R;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.facebook.FacebookSdk.getApplicationContext;
+import static reverieworks.addy.Activity.WelcomeActivity.MyPREFERENCES;
 
 
 public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFailedListener {
@@ -291,6 +294,7 @@ public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFail
                 public void onSuccess(LoginResult loginResult) {
                     // App code
                     Toast.makeText(getContext(), "Logged In Successfully", Toast.LENGTH_SHORT).show();
+                    setSessionManagement();
                     startActivity(new Intent(getApplicationContext(), MapsActivity.class));
                 }
 
@@ -337,6 +341,7 @@ public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFail
             if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = result.getSignInAccount();
+                setSessionManagement();
                 firebaseAuthWithGoogle(account);
             } else {
                 // Google Sign In failed, update UI appropriately
@@ -359,8 +364,10 @@ public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFail
 
                         Toast.makeText(getContext(), "Successfully LoggedIn",
                                 Toast.LENGTH_SHORT).show();
+                        setSessionManagement();
 
                         startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
@@ -373,6 +380,14 @@ public class SignIn extends Fragment implements GoogleApiClient.OnConnectionFail
                         // ...
                     }
                 });
+    }
+
+    private void setSessionManagement() {
+
+        SharedPreferences.Editor editor = this.getActivity().getSharedPreferences(MyPREFERENCES, MODE_PRIVATE).edit();
+
+        editor.putString("LOCAL_sessionManagement", String.valueOf(1));
+        editor.apply();
     }
 
     private void signIn() {

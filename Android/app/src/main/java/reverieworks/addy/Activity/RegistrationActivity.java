@@ -1,5 +1,8 @@
 package reverieworks.addy.Activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -24,15 +27,26 @@ public class RegistrationActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private String local_sessionManagement="1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        //check for session management
+        //Session Management
+        SharedPreferences sharedPref = getSharedPreferences(WelcomeActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+        local_sessionManagement = (sharedPref.getString("LOCAL_sessionManagement", ""));
+
+        if (local_sessionManagement.compareTo("1") == 0) {
+            finish();
+            startActivity(new Intent(RegistrationActivity.this,MapsActivity.class));
+        }
 
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+            toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

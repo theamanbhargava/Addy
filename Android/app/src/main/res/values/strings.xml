@@ -16,5 +16,7 @@
     <string name="title_activity_welcome_page">WelcomePage</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="openDrawer">Open</string>
+    <string name="closeDrawer">Close</string>
 
 </resources>

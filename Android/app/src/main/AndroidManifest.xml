@@ -17,13 +17,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.RegistrationActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".Activity.RegistrationActivity"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -57,18 +51,14 @@
         </activity>
         <activity
             android:name=".Activity.MapsActivity"
-            android:label="@string/title_activity_maps"
-            android:theme="@style/AppTheme" />
+            android:label="@string/title_activity_maps" />
         <activity
             android:name=".Activity.Homepage"
             android:label="@string/title_activity_homepage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activity.PlacesAPIActivity" />
-        <activity
-            android:name=".Activity.WelcomePage"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_welcome_page"
-            android:theme="@style/FullscreenTheme">
+        <activity android:name=".Activity.WelcomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

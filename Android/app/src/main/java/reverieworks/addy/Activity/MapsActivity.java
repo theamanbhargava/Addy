@@ -2,7 +2,9 @@ package reverieworks.addy.Activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -10,16 +12,24 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -38,14 +48,27 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import reverieworks.addy.R;
 
@@ -69,6 +92,11 @@ public class MapsActivity extends AppCompatActivity implements
     private Button button_searchByPlaces;
     private Button button_searchByACode;
     private SearchView searchView;
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
+    private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
+    private String latlng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +108,11 @@ public class MapsActivity extends AppCompatActivity implements
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Addy");
         }
+
+        //progressbar
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
 
         // Create an instance of GoogleAPIClient. To get current location
         if (mGoogleApiClient == null) {
@@ -95,33 +128,53 @@ public class MapsActivity extends AppCompatActivity implements
                 .findFragmentById(map);
         mapFragment.getMapAsync(this);
 
-        searchView = (SearchView) findViewById(R.id.search_bar_maps);
-
-        final PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName());
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
-
         button_searchByACode = (Button) findViewById(R.id.button_SearchByACode);
         button_searchByACode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    button_searchByACode.setVisibility(View.GONE);
-                    button_searchByPlaces.setVisibility(View.GONE);
 
-                    searchView.setVisibility(View.VISIBLE);            }
+                Context context = MapsActivity.this;
+                LayoutInflater li = LayoutInflater.from(context);
+                View promptsView = li.inflate(R.layout.dialog_layout, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
+
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                final EditText userInput = (EditText) promptsView
+                        .findViewById(R.id.editTextDialogUserInput);
+
+                // set dialog message
+                alertDialogBuilder
+                        .setCancelable(false)
+                        .setPositiveButton("OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // get user input and set it to result
+                                        // edit text
+                                        Toast.makeText(getApplicationContext(), userInput.getText(), Toast.LENGTH_LONG).show();
+                                        if (isLegalACodeCustomName(userInput.getText().toString()))
+                                            new GetACodeFromCustomName().execute(userInput.getText().toString());
+                                        else
+                                            latlng = convertback(userInput.getText().toString());
+
+                                    }
+                                })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+            }
         });
 
         button_searchByPlaces = (Button) findViewById(R.id.button_SearchByPlace);
@@ -138,7 +191,371 @@ public class MapsActivity extends AppCompatActivity implements
                 }
             }
         });
+/*
 
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.openDrawer, R.string.closeDrawer) {
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        //Setting the actionbarToggle to drawer layout
+        drawer.setDrawerListener(actionBarDrawerToggle);
+
+        //calling sync state is necessary or else your hamburger icon wont show up
+        actionBarDrawerToggle.syncState();
+    }
+
+*/
+    }
+
+    private void convertACodeToLatLong() {
+
+    }
+
+    public boolean isLegalACodeCustomName(String acode) {
+
+        for (int i = 0; i < acode.length(); i++)
+            if (acode.charAt(0) >= 97 && acode.charAt(0) <= 122)
+                return true;
+        return false;
+
+    }
+
+    class GetACodeFromCustomName extends AsyncTask<String, Void, String> {
+
+        int responseCode;
+        String JsonResponse;
+
+        protected void onPreExecute() {
+
+            progressDialog.setMessage("Searching...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String data_value = params[0];
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            try {
+
+                URL url = new URL("https://addydatabase-a4e8.restdb.io/rest/addydata?q={\"Special_Name\":\"" + data_value + "\"}");
+                urlConnection = (HttpURLConnection) url.openConnection();
+                Log.d(TAG, "Connected To : " + String.valueOf(url));
+//set headers
+                urlConnection.setRequestMethod("GET");
+                urlConnection.setRequestProperty("x-apikey", "0e835d0ce5cc81e9ae08fb1f7ac2392ad04ee");
+                urlConnection.setRequestProperty("cache-control", "no-cache");
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.connect();
+//0
+//get response code
+                responseCode = urlConnection.getResponseCode();
+                android.util.Log.e(TAG, "ResponseMessage " + urlConnection.getResponseMessage() + " ; ResponseCode " + urlConnection.getResponseCode());
+
+                InputStream inputStream = urlConnection.getInputStream();
+//input stream
+                StringBuilder buffer = new StringBuilder();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    //  android.util.Log.e(TAG, "InputStream Is Null");
+                    return null;
+
+                }
+                reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+                String inputLine;
+                while ((inputLine = reader.readLine()) != null)
+                    buffer.append(inputLine).append("\n");
+
+                if (buffer.length() == 0) {
+                    //android.util.Log.e(TAG, "Stream was empty. No point in parsing.");
+                    return null;
+                } else {
+
+                    JsonResponse = buffer.toString();
+//response data
+                    //android.util.Log.i(TAG, "doInBackGround() " + JsonResponse);
+                    return JsonResponse;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        android.util.Log.e(TAG, "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+        protected void onPostExecute(String data) {
+
+            //android.util.Log.i(TAG, "no return");
+            if (data == null) {
+                android.util.Log.e(TAG, "Error Null");
+            }
+            progressDialog.dismiss();
+            String message_alertBox;
+            String title_alertBox;
+
+            Log.e("TAG1", data);
+            LatLngBounds.Builder latlng = new LatLngBounds.Builder();
+
+            if (responseCode == 200) {
+
+                android.util.Log.i(TAG, "Response Code = 200.... " + data);
+
+                try {
+                    android.util.Log.e(TAG, "Inside try");
+
+                    //if(data_currentRadius == null)
+
+                    //Convert String to JSON Data
+                    JSONArray jsonObject_mainArray = (JSONArray) new JSONTokener(data).nextValue();
+                    JSONObject jsonObject_main = jsonObject_mainArray.getJSONObject(0);
+                    ACodeJSON object;
+
+
+                    String latlng2 = convertback(jsonObject_main.getString("Acode"));
+                    String[] latlong =  latlng2.split(",");
+                    double latitude = Double.parseDouble(latlong[0]);
+                    double longitude = Double.parseDouble(latlong[1]);
+                    LatLng location = new LatLng(latitude, longitude);
+                    createMarker(jsonObject_main.getString("Acode"),location,latitude,longitude);
+
+                    Log.e("TAG", latlng2);
+
+                    //if(jsonObject.getString())
+
+
+                } catch (JSONException e) {
+                    // Log.e(TAG, "ERROR PARSING DATA");
+                    e.printStackTrace();
+                }
+                return;
+
+            } else if (responseCode == 401) {
+                message_alertBox = "Internal Server Error";
+                title_alertBox = "Error";
+                //android.util.Log.e(TAG, "Response Code = 401");
+            } else {
+                //   android.util.Log.e(TAG, "JSON Response returns =" + data);
+                title_alertBox = "Failed";
+                message_alertBox = "Some Error Occured";
+            }
+
+            //android.util.Log.i("INFO", "data" + data);
+
+            showMessageDialog(title_alertBox, message_alertBox);
+        }
+    }
+
+    private void createMarker(String acode, LatLng location, double latitude, double longitude) {
+        Marker mMarker = null;
+        if (acode!= null) {
+
+            mMap.setOnMarkerClickListener(this);
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).anchor(0.5f, 0.5f).title(acode));
+            //mMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pegman));
+
+
+        }
+    }
+
+
+    class RequestACodeFromCustomName extends AsyncTask<String, Void, String> {
+
+        int responseCode;
+        String JsonResponse;
+
+        protected void onPreExecute() {
+
+            progressDialog.setMessage("Sending Request...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String data_username = params[0];
+            String data_Password = params[1];
+            int data_bloodID = Integer.parseInt(params[2]);
+            int data_userID = Integer.parseInt(params[3]);
+
+            HttpURLConnection urlConnection = null;
+            BufferedReader reader = null;
+            try {
+                URL url = new URL("https://addydatabase-a4e8.restdb.io/rest/addydata");
+                urlConnection = (HttpURLConnection) url.openConnection();
+
+                JSONObject JSON_Main = new JSONObject();
+/*
+                try {
+
+                    JSON_Main.put("UserName", JSON_User);
+                    //JSON_Main.put()
+                    // Log.e(TAG, JSON_Main.toString());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
+//set headers
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("X-Auth", data_username + ":" + data_Password);
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.connect();
+
+//set headers and method
+                DataOutputStream writer = new DataOutputStream(urlConnection.getOutputStream());
+                // Log.i(TAG, JSON_Main.toString());
+                writer.writeBytes(JSON_Main.toString());
+// json data
+                //     android.util.Log.e(TAG, "ResponseMessage " + urlConnection.getResponseMessage() + "ResponseCode " + urlConnection.getResponseCode());
+                responseCode = urlConnection.getResponseCode();
+                writer.flush();
+                writer.close();
+
+                InputStream inputStream = urlConnection.getInputStream();
+//input stream
+                StringBuilder buffer = new StringBuilder();
+                if (inputStream == null) {
+                    // Nothing to do.
+                    // Log.e(TAG, "InputStream Is Null");
+                    return null;
+
+                }
+                reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+
+                String inputLine;
+                while ((inputLine = reader.readLine()) != null)
+                    buffer.append(inputLine).append("\n");
+
+                if (buffer.length() == 0) {
+                    // Log.e(TAG, "Stream was empty. No point in parsing.");
+                    return null;
+                } else {
+
+                    JsonResponse = buffer.toString();
+//response data
+                    // Log.i(TAG, "doInBackGround() " + JsonResponse);
+                    return JsonResponse;
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (final IOException e) {
+                        // Log.e(TAG, "Error closing stream", e);
+                    }
+                }
+            }
+            return null;
+        }
+
+
+        protected void onPostExecute(String data) {
+
+//            android.util.Log.i(TAG, data);
+            if (data == null) {
+                // Log.e(TAG, "Error Null");
+            }
+
+            progressDialog.dismiss();
+            String message_alertBox;
+            String title_alertBox;
+
+            if (responseCode == 201) {
+
+                title_alertBox = "Request Sent";
+                message_alertBox = "Please Wait For The Response";
+                //TODO: add this user to the list,
+
+            } else if (responseCode == 400) {
+
+                message_alertBox = "Error";
+                title_alertBox = "User has different Blood group";
+                // Log.e(TAG, "Response Code = 400");
+            } else if (responseCode == 409) {
+
+                message_alertBox = "Conflict";
+                title_alertBox = "You cannot request yourself";
+                // Log.e(TAG, "Response Code = 400");
+            } else if (responseCode == 404) {
+
+                message_alertBox = "Not Found";
+                title_alertBox = "Donor Not Found";
+                // Log.e(TAG, "Response Code = 400");
+            } else {
+
+                // Log.e(TAG, "JSON Response returns =" + data);
+
+                message_alertBox = "Error";
+                title_alertBox = "Internal Server Error";
+                // Log.i("INFO", "data" + data);
+            }
+            showMessageDialog(title_alertBox, message_alertBox);
+        }
+    }
+
+    private void showMessageDialog(String title, String message) {
+
+
+        android.app.AlertDialog.Builder builderSingle;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            builderSingle = new android.app.AlertDialog.Builder(MapsActivity.this);
+        } else {
+            builderSingle = new android.app.AlertDialog.Builder(MapsActivity.this);
+        }
+
+//        AlertDialog.Builder builderSingle = new AlertDialog.Builder(FirstTimeLogIn.this,R.style.MyAlertDialogStyle);
+        builderSingle.setMessage(message);
+        builderSingle.setTitle(title);
+        builderSingle.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+            }
+        });
+        builderSingle.show();
+
+
+    }
+
+    String convertback(String Acode) {
+        StringBuilder ss = new StringBuilder("");
+        return ss.append((Integer.parseInt(Acode.substring(0, 4), 36) * 1.0 / 10000) + 7.4).append(",").append((Integer.parseInt(Acode.substring(4, 8), 36) * 1.0 / 10000) + 67.5).toString();
+    }
+
+    String convert(double lati, double longi) {
+        int l = (int) (Math.round(longi * 10000) - 675000);
+        int la = (int) (Math.round(lati * 10000) - 74000);
+        return (Integer.toString(la, 36) + Integer.toString(l, 36)).toUpperCase();
     }
 
     private final LocationListener mLocationListener = new LocationListener() {
@@ -163,6 +580,19 @@ public class MapsActivity extends AppCompatActivity implements
         mMap = map;
 
         mMap.setOnMyLocationButtonClickListener(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        mMap.setMyLocationEnabled(true);
+
         enableMyLocation();
     }
     private boolean getLatitudeAndLongitude() {
