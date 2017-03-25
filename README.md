@@ -29,7 +29,7 @@ Tech Stack:
   <li>BootStrap 3</li>
   <li>Google Maps Geocoder and Places API</li>
 </ul>
-<strong>Android</strong>
+<strong><a href="https://github.com/Addy-HINT17/Addy/blob/master/Addy.apkAndroid">Android App</a></strong>
 A customised Android Application in which the user can login and use his customised Addy
 Tech Stack:
 <ul>
