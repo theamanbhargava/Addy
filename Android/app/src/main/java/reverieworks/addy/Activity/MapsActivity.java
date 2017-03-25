@@ -692,7 +692,8 @@ public class MapsActivity extends AppCompatActivity implements
                 // Log.i(TAG, "Location enabled by user!");
                 if(requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE){
                     Place place = PlaceAutocomplete.getPlace(this, data);
-                    Log.i(TAG, "Place: " + place.getName());
+                    Log.i(TAG, "Place: " + place.getLatLng());
+                    createMarkerLatLng(convert(place.getLatLng().latitude,place.getLatLng().longitude),place.getLatLng());
                     Toast.makeText(getApplicationContext(),place.getId(),Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getApplicationContext(), "Location Enabled", Toast.LENGTH_SHORT).show();
@@ -718,6 +719,21 @@ public class MapsActivity extends AppCompatActivity implements
                 // Log.e(TAG, "Error in selecting the button in Auto-Switch On Location Feature");
                 break;
             }
+        }
+    }
+
+    private void createMarkerLatLng(CharSequence name, LatLng latLng_local) {
+        Marker mMarker = null;
+        if (name!= null) {
+
+            mMap.setOnMarkerClickListener(this);
+            mMap.addMarker(new MarkerOptions().position(latLng_local).anchor(0.5f, 0.5f).title(name.toString()));
+            //mMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pegman));
+
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng_local, 10);
+            mMap.animateCamera(cameraUpdate);
+
+
         }
     }
 
