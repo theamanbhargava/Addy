@@ -19,7 +19,7 @@ Like you have an Email ID, for addresses you have Addy! An app that changes the 
 </ul>
 
 
-<strong><a href="./Web/index.html">Web</a></strong>
+<strong><a href="https://addy-hint17.github.io/Addy/Web/index.html">Web</a></strong>
 <p>A web application that can be used by every person freely and easily.<br/><br/><b>Tech Stack:<b><br/>HTML5<br/>CSS3<br/>JavaScript<br/>BootStrap 3<br/>Google Maps Geocoder and Places API</p>
 
 <strong>Android</strong>
