@@ -4,6 +4,14 @@ Like you have an Email ID, for addresses you have Addy! An app that changes the 
 
 <strong>Products Used</strong>
 <ul>
+  <li>HTML5</li>
+  <li>CSS3</li>
+  <li>JavaScript</li>
+  <li>BootStrap 3</li>
+  <li>XML</li>
+  <li>Java</li>
+  <li>RestDB</li>
+  <li>Google Maps Places API</li>
   <li>Google Maps Geocoder API Used</li>
   <li>Firebase Authentication Used</li>
   <li>Firebase Realtime Database Used</li>
@@ -11,11 +19,11 @@ Like you have an Email ID, for addresses you have Addy! An app that changes the 
 </ul>
 
 
-<strong>Web</strong>
-This is a Web Application built for Addy. It has HTML, CSS Front-End with JavaScript Back.
+<strong><a href="./Web/index.html">Web</a></strong>
+<p>A web application that can be used by every person freely and easily.<br/><br/><b>Tech Stack:<b><br/>HTML5<br/>CSS3<br/>JavaScript<br/>BootStrap 3<br/>Google Maps Geocoder and Places API</p>
 
 <strong>Android</strong>
-This is an Android Application built for Addy. This is a native Android Application written purely in Java.
+<p>A customised Android Application in which the user can login and use his customised Addy<br/><br/><b>Tech Stack:<b><br/>XML<br/>Java<br/>RestDB<br/>Firebase<br/>Google Maps Geocoder and Places API</p>
 
 <a href="https://github.com/Addy-HINT17/Addy/wiki"> Wiki</a>
 
