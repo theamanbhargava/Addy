@@ -158,9 +158,16 @@ public class MapsActivity extends AppCompatActivity implements
                                         Toast.makeText(getApplicationContext(), userInput.getText(), Toast.LENGTH_LONG).show();
                                         if (isLegalACodeCustomName(userInput.getText().toString()))
                                             new GetACodeFromCustomName().execute(userInput.getText().toString());
-                                        else
-                                            latlng = convertback(userInput.getText().toString());
+                                        else {
 
+
+                                            String latlng2 = convertback(userInput.getText().toString());
+                                            String[] latlong =  latlng2.split(",");
+                                            double latitude = Double.parseDouble(latlong[0]);
+                                            double longitude = Double.parseDouble(latlong[1]);
+                                            LatLng location = new LatLng(latitude, longitude);
+                                            createMarker(userInput.getText().toString(),location,latitude,longitude);
+                                        }
                                     }
                                 })
                         .setNegativeButton("Cancel",
