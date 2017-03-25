@@ -48,6 +48,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -377,6 +378,8 @@ public class MapsActivity extends AppCompatActivity implements
             mMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude)).anchor(0.5f, 0.5f).title(acode));
             //mMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pegman));
 
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longitude), 10);
+            mMap.animateCamera(cameraUpdate);
 
         }
     }
