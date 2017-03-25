@@ -420,7 +420,7 @@ public class MapsActivity extends AppCompatActivity implements
 
                 try {
 
-                    JSON_Main.put("UserName", "username");
+                    JSON_Main.put("UserName", "username@addy.com");
                     JSON_Main.put("Acode",acode);
                     JSON_Main.put("Special_Name",special_name);
                     //JSON_Main.put()
@@ -508,30 +508,7 @@ public class MapsActivity extends AppCompatActivity implements
                 message_alertBox = "Please Wait For The Response";
                 //TODO: add this user to the list,
 
-            } else if (responseCode == 400) {
-
-                message_alertBox = "Error";
-                title_alertBox = "User has different Blood group";
-                // Log.e(TAG, "Response Code = 400");
-            } else if (responseCode == 409) {
-
-                message_alertBox = "Conflict";
-                title_alertBox = "You cannot request yourself";
-                // Log.e(TAG, "Response Code = 400");
-            } else if (responseCode == 404) {
-
-                message_alertBox = "Not Found";
-                title_alertBox = "Donor Not Found";
-                // Log.e(TAG, "Response Code = 400");
-            } else {
-
-                // Log.e(TAG, "JSON Response returns =" + data);
-
-                message_alertBox = "Error";
-                title_alertBox = "Internal Server Error";
-                // Log.i("INFO", "data" + data);
             }
-            showMessageDialog(title_alertBox, message_alertBox);
         }
 
 
