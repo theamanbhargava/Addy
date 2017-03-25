@@ -25,7 +25,7 @@ $(window).load(initMap = function(){
                geocoder.geocode( { 'address': address}, function(results, status) {
                                 if (status == google.maps.GeocoderStatus.OK) {
                                 map = new google.maps.Map(document.getElementById('maparea'), {
-                                                          zoom: 8,
+                                                          zoom: 10,
                                                           disableDefaultUI: true,
                                                           fullscreenControl: false,
                                                           zoomControl: true,
@@ -331,11 +331,18 @@ $(window).load(initMap = function(){
                
                var latitude = latLng.lat();
                var longitude = latLng.lng();
-               var lati = Math.round(latitude*100)+18000;
-               var long = Math.round(longitude*100)+9000;
+               var lati = Math.round(latitude*10000)-74000;
+               var long = Math.round(longitude*10000)-675000;
+               
+               if(lati<=0 || long<=0 || lati>=300000 || long>=300000) {
+               document.getElementById('addycode').innerHTML = 'Region Not Supported';
+               }
+               
+               else {
                var latcode = codeconvert(lati);
                var longcode = codeconvert(long);
                document.getElementById('addycode').innerHTML = [latcode,longcode].join('');
+               }
                
                }
                
@@ -347,9 +354,9 @@ $(window).load(initMap = function(){
                codeback = function() {
                
                var backcode = document.getElementById('BackCode').value;
-               var backcode1 = backcode.substring(0,3);
-               var backcode2 = backcode.substring(3,6);
-               document.getElementById('NameSearch').value = [(codebackconvert(backcode1)/100)-180,(codebackconvert(backcode2)/100)-90].join(', ');
+               var backcode1 = backcode.substring(0,4);
+               var backcode2 = backcode.substring(4,8);
+               document.getElementById('NameSearch').value = [(codebackconvert(backcode1)/10000)+7.4,(codebackconvert(backcode2)/10000)+67.5].join(', ');
                codeAddress();
                }
                });
